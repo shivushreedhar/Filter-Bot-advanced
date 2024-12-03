@@ -1,11 +1,12 @@
-import os
+ import os
 import asyncio
 from pyrogram import Client, filters, enums
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from info import ADMINS  # List of admin IDs
 from utils import get_status  # Utility function for bot status
+from database.ia_filterdb import Media  # Example database handler
 
-# Command: /start
+# Command /start
 @Client.on_message(filters.command("start") & filters.incoming)
 async def start(client, message):
     if message.chat.type == enums.ChatType.PRIVATE:
@@ -65,9 +66,47 @@ async def ginfo(client, message):
         await message.reply_text("This command is only available in groups.")
 
 # Command: /index
-@Client.on_message(filters.command("index") & filters.incoming)
+@Client.on_message(filters.command("index") & filters.user(ADMINS) & filters.private)
 async def index(client, message):
-    await message.reply_text("Index files into the bot.")
+    if not message.reply_to_message:
+        await message.reply_text("Please reply to a message containing media from a channel to index.")
+        return
+
+    media_message = message.reply_to_message
+    media_types = ["document", "video", "audio", "photo"]
+
+    indexed_files = []
+
+    try:
+        for media_type in media_types:
+            media = getattr(media_message, media_type, None)
+            if media:
+                # Extract file details
+                file_id = media.file_id
+                file_name = media.file_name if hasattr(media, "file_name") else "Unnamed"
+                file_size = media.file_size
+
+                # Save to database
+                await Media().add_file(
+                    file_id=file_id,
+                    file_name=file_name,
+                    file_size=file_size,
+                    admin_id=message.from_user.id,
+                    channel_id=media_message.forward_from_chat.id if media_message.forward_from_chat else None
+                )
+                indexed_files.append(file_name or "Unnamed")
+
+        if indexed_files:
+            await message.reply_text(
+                f"Successfully indexed the following files:\n\n" +
+                "\n".join([f"- {file}" for file in indexed_files])
+            )
+        else:
+            await message.reply_text("No valid media found in the replied message.")
+    except Exception as e:
+        await message.reply_text(f"Failed to index files due to an error:\n{e}")
+
+# Other commands remain unchanged...
 
 # Command: /upload
 @Client.on_message(filters.command("upload") & filters.incoming)
@@ -132,19 +171,4 @@ async def myplan(client, message):
 # Command: /plan
 @Client.on_message(filters.command("plan") & filters.incoming)
 async def plan(client, message):
-    await message.reply_text("Available plans:\n1. Basic\n2. Premium\n3. VIP")
-
-# Command: /premiumuser
-@Client.on_message(filters.command("premiumuser") & filters.user(ADMINS))
-async def premiumuser(client, message):
-    await message.reply_text("List of premium users:")
-
-# Command: /broadcast
-@Client.on_message(filters.command("broadcast") & filters.user(ADMINS))
-async def broadcast(client, message):
-    await message.reply_text("Broadcast your message to all users.")
-
-# Command: /gbroadcast
-@Client.on_message(filters.command("gbroadcast") & filters.user(ADMINS))
-async def gbroadcast(client, message):
-    await message.reply_text("Broadcast your message to all groups.")
+    await message.reply_text("Available plans:\
