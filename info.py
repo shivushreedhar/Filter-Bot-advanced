@@ -39,23 +39,23 @@ URL = environ.get('URL', '')
 # verify system vars
 IS_VERIFY = is_enabled('IS_VERIFY', True)
 LOG_VR_CHANNEL = int(environ.get('LOG_VR_CHANNEL', '-1002338545238'))
-TUTORIAL = environ.get("TUTORIAL", "https://youtu.be/0c-i2Lol6LU")
-TUTORIAL2 = environ.get("TUTORIAL2", "https://youtu.be/GdaUbzxDTKs")
-TUTORIAL3 = environ.get("TUTORIAL3", "https://youtu.be/rddlpYLm0G0")
+TUTORIAL = environ.get("TUTORIAL", "https://t.me/bshowtodownload/12")
+TUTORIAL2 = environ.get("TUTORIAL2", "https://t.me/bshowtodownload/12")
+TUTORIAL3 = environ.get("TUTORIAL3", "https://t.me/bshowtodownload/12")
 VERIFY_IMG = environ.get("VERIFY_IMG", "https://graph.org/file/45a270fc6a0a1c183c614.jpg")
-SHORTENER_API = environ.get("SHORTENER_API", "8c09653e5c38f84d1b76ad3197c5a023e53b494d")
-SHORTENER_WEBSITE = environ.get("SHORTENER_WEBSITE", "onepagelink.in")
-SHORTENER_API2 = environ.get("SHORTENER_API2", "0c8ebd63bfe9f67f9970b8767498ff60316b9b03")
-SHORTENER_WEBSITE2 = environ.get("SHORTENER_WEBSITE2", "tnshort.net")
-SHORTENER_API3 = environ.get("SHORTENER_API3", "9c5a6c96077a1b499d8f953331221159383eb434")
-SHORTENER_WEBSITE3 = environ.get("SHORTENER_WEBSITE3", "omegalinks.in")
+SHORTENER_API = environ.get("SHORTENER_API", "5cf3abda94423eb924557ad5ffa4d5b6bb32b2c0")
+SHORTENER_WEBSITE = environ.get("SHORTENER_WEBSITE", "runurl.in")
+SHORTENER_API2 = environ.get("SHORTENER_API2", "5cf3abda94423eb924557ad5ffa4d5b6bb32b2c0")
+SHORTENER_WEBSITE2 = environ.get("SHORTENER_WEBSITE2", "runurl.in")
+SHORTENER_API3 = environ.get("SHORTENER_API3", "5cf3abda94423eb924557ad5ffa4d5b6bb32b2c0")
+SHORTENER_WEBSITE3 = environ.get("SHORTENER_WEBSITE3", "runurl.in")
 TWO_VERIFY_GAP = int(environ.get('TWO_VERIFY_GAP', "3600"))
 THREE_VERIFY_GAP = int(environ.get('THREE_VERIFY_GAP', "21600"))
 
 # languages search
 LANGUAGES = ["hindi", "english", "telugu", "tamil", "kannada", "malayalam"]
 
-auth_channel = environ.get('AUTH_CHANNEL', '')
+auth_channel = environ.get('AUTH_CHANNEL', '-1002080192401')
 AUTH_CHANNEL = int(auth_channel) if auth_channel and id_pattern.search(auth_channel) else None
 SUPPORT_GROUP = int(environ.get('SUPPORT_GROUP', ''))
 
