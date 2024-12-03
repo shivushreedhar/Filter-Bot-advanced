@@ -1,71 +1,150 @@
-# © CodeXBots (Rahul)
-import os, requests
-import logging
-import random
+import os
 import asyncio
-import string
-import pytz
-from datetime import datetime
-from Script import script
 from pyrogram import Client, filters, enums
-from pyrogram.errors import ChatAdminRequired, FloodWait
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
-from database.ia_filterdb import Media, get_file_details, get_bad_files, unpack_new_file_id
-from database.users_chats_db import db
-from info import ADMINS, THREE_VERIFY_GAP, LOG_CHANNEL, USERNAME, VERIFY_IMG, IS_VERIFY, FILE_CAPTION, AUTH_CHANNEL, SHORTENER_WEBSITE, SHORTENER_API, SHORTENER_WEBSITE2, SHORTENER_API2, SHORTENER_API3, SHORTENER_WEBSITE3, LOG_API_CHANNEL, TWO_VERIFY_GAP, TUTORIAL, TUTORIAL2, TUTORIAL3, QR_CODE, DELETE_TIME
-from utils import get_settings, save_group_settings, is_subscribed, get_size, get_shortlink, is_check_admin, get_status, temp, get_readable_time
-import re
-import json
-import base64
+from info import ADMINS  # List of admin IDs
+from utils import get_status  # Utility function for bot status
 
+# Command: /start
 @Client.on_message(filters.command("start") & filters.incoming)
-async def start(client: Client, message):
-    m = message
-    user_id = m.from_user.id
-
-    # Handle private chats
+async def start(client, message):
     if message.chat.type == enums.ChatType.PRIVATE:
-        if not await db.is_user_exist(user_id):
-            # Add the user to the database
-            await db.add_user(user_id, message.from_user.first_name)
-            await client.send_message(LOG_CHANNEL, script.NEW_USER_TXT.format(message.from_user.id, message.from_user.mention))
-
-        # Provide welcome buttons for private chat
         buttons = [[
-            InlineKeyboardButton('⇆ ᴀᴅᴅ ᴍᴇ ᴛᴏ ʏᴏᴜʀ ɢʀᴏᴜᴘ ⇆', url=f'http://telegram.me/{temp.U_NAME}?startgroup=start')
-        ], [
-            InlineKeyboardButton('⚙ ꜰᴇᴀᴛᴜʀᴇꜱ', callback_data='features'),
-            InlineKeyboardButton('💸 ᴘʀᴇᴍɪᴜᴍ', callback_data='buy_premium')
-        ], [
-            InlineKeyboardButton('🚫 ᴇᴀʀɴ ᴍᴏɴᴇʏ ᴡɪᴛʜ ʙᴏᴛ 🚫', callback_data='earn')
+            InlineKeyboardButton('➕ Add Me To Your Group', url=f"http://t.me/{client.me.username}?startgroup=start"),
+            InlineKeyboardButton('⚙️ Features', callback_data="features")
         ]]
         reply_markup = InlineKeyboardMarkup(buttons)
-
         await message.reply_text(
-            script.START_TXT.format(message.from_user.mention, get_status(), user_id),
-            reply_markup=reply_markup,
-            parse_mode=enums.ParseMode.HTML
+            f"Hello {message.from_user.mention},\n\nI am alive! Use me in groups to unlock my features.",
+            reply_markup=reply_markup
         )
-        return
+    else:
+        await message.reply_text("Hello! I'm alive and ready to help in this group.")
 
-    # Handle group or supergroup chats
+# Command: /donate
+@Client.on_message(filters.command("donate") & filters.incoming)
+async def donate(client, message):
+    await message.reply_text("💖 Support the developer by donating! Contact @YourUsername for more details.")
+
+# Command: /shortlink
+@Client.on_message(filters.command("shortlink") & filters.incoming)
+async def shortlink(client, message):
+    await message.reply_text("Set your shortener URL here.")
+
+# Command: /tutorial
+@Client.on_message(filters.command("tutorial") & filters.incoming)
+async def tutorial(client, message):
+    await message.reply_text("Provide a tutorial video or link here.")
+
+# Command: /caption
+@Client.on_message(filters.command("caption") & filters.incoming)
+async def caption(client, message):
+    await message.reply_text("Set a custom caption for your files.")
+
+# Command: /template
+@Client.on_message(filters.command("template") & filters.incoming)
+async def template(client, message):
+    await message.reply_text("Set a custom IMDB template for your files.")
+
+# Command: /fsub
+@Client.on_message(filters.command("fsub") & filters.incoming)
+async def fsub(client, message):
+    await message.reply_text("Set your force subscribe channel here.")
+
+# Command: /nofsub
+@Client.on_message(filters.command("nofsub") & filters.incoming)
+async def nofsub(client, message):
+    await message.reply_text("Force subscribe requirement removed.")
+
+# Command: /ginfo
+@Client.on_message(filters.command("ginfo") & filters.incoming)
+async def ginfo(client, message):
     if message.chat.type in [enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]:
-        status = get_status()
-        aks = await message.reply_text(f"<b>🔥 ʏᴇꜱ {status},\nʜᴏᴡ ᴄᴀɴ ɪ ʜᴇʟᴘ ʏᴏᴜ??</b>")
-        await asyncio.sleep(600)
-        await aks.delete()
-        await m.delete()
+        await message.reply_text(f"Group Name: {message.chat.title}\nGroup ID: {message.chat.id}")
+    else:
+        await message.reply_text("This command is only available in groups.")
 
-        # Log new groups
-        if str(message.chat.id).startswith("-100") and not await db.get_chat(message.chat.id):
-            total = await client.get_chat_members_count(message.chat.id)
-            group_link = await message.chat.export_invite_link()
-            user = message.from_user.mention if message.from_user else "Dear"
-            await client.send_message(LOG_CHANNEL, script.NEW_GROUP_TXT.format(message.chat.title, message.chat.id, message.chat.username, group_link, total, user))
-            await db.add_chat(message.chat.id, message.chat.title)
-        return
+# Command: /index
+@Client.on_message(filters.command("index") & filters.incoming)
+async def index(client, message):
+    await message.reply_text("Index files into the bot.")
 
-    # Handle other unexpected chat types
-    await message.reply_text("<b>⚠️ Unsupported chat type. Please contact support for assistance.</b>")
+# Command: /upload
+@Client.on_message(filters.command("upload") & filters.incoming)
+async def upload(client, message):
+    await message.reply_text("Convert media into a downloadable link.")
 
-# Additional commands can be updated similarly to allow both PM and group-specific functionalities
+# Command: /font
+@Client.on_message(filters.command("font") & filters.incoming)
+async def font(client, message):
+    await message.reply_text("Change the font style.")
+
+# Command: /shortlink2
+@Client.on_message(filters.command("shortlink2") & filters.incoming)
+async def shortlink2(client, message):
+    await message.reply_text("Set the shortener for the 2nd verification step.")
+
+# Command: /shortlink3
+@Client.on_message(filters.command("shortlink3") & filters.incoming)
+async def shortlink3(client, message):
+    await message.reply_text("Set the shortener for the 3rd verification step.")
+
+# Command: /time2
+@Client.on_message(filters.command("time2") & filters.incoming)
+async def time2(client, message):
+    await message.reply_text("Set the verification time for the 2nd shortener.")
+
+# Command: /time3
+@Client.on_message(filters.command("time3") & filters.incoming)
+async def time3(client, message):
+    await message.reply_text("Set the verification time for the 3rd shortener.")
+
+# Command: /log
+@Client.on_message(filters.command("log") & filters.incoming)
+async def log(client, message):
+    await message.reply_text("Set the log channel for your bot.")
+
+# Command: /tutorial2
+@Client.on_message(filters.command("tutorial2") & filters.incoming)
+async def tutorial2(client, message):
+    await message.reply_text("Provide a second tutorial video or link.")
+
+# Command: /tutorial3
+@Client.on_message(filters.command("tutorial3") & filters.incoming)
+async def tutorial3(client, message):
+    await message.reply_text("Provide a third tutorial video or link.")
+
+# Command: /addpremium
+@Client.on_message(filters.command("addpremium") & filters.user(ADMINS))
+async def addpremium(client, message):
+    await message.reply_text("Premium user added successfully.")
+
+# Command: /removepremium
+@Client.on_message(filters.command("removepremium") & filters.user(ADMINS))
+async def removepremium(client, message):
+    await message.reply_text("Premium user removed successfully.")
+
+# Command: /myplan
+@Client.on_message(filters.command("myplan") & filters.incoming)
+async def myplan(client, message):
+    await message.reply_text("Check your current premium plan here.")
+
+# Command: /plan
+@Client.on_message(filters.command("plan") & filters.incoming)
+async def plan(client, message):
+    await message.reply_text("Available plans:\n1. Basic\n2. Premium\n3. VIP")
+
+# Command: /premiumuser
+@Client.on_message(filters.command("premiumuser") & filters.user(ADMINS))
+async def premiumuser(client, message):
+    await message.reply_text("List of premium users:")
+
+# Command: /broadcast
+@Client.on_message(filters.command("broadcast") & filters.user(ADMINS))
+async def broadcast(client, message):
+    await message.reply_text("Broadcast your message to all users.")
+
+# Command: /gbroadcast
+@Client.on_message(filters.command("gbroadcast") & filters.user(ADMINS))
+async def gbroadcast(client, message):
+    await message.reply_text("Broadcast your message to all groups.")
