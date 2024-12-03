@@ -1,8 +1,8 @@
-pyrofork==
+pyrofork
 tgcrypto
-pymongo[srv]==
-motor==
-marshmallow==3.14.1
+pymongo[srv]
+motor
+marshmallow
 umongo==
 git+https://github.com/Joelkb/cinemagoer
 Heroku3
@@ -17,7 +17,7 @@ ujson
 pyshorteners
 datetime
 pytz
-dnspython==2.3.0
+dnspython
 aiohttp
 python-math
 Pillow
