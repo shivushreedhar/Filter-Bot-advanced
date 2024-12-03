@@ -1,7 +1,7 @@
 pyrofork
 tgcrypto
 pymongo[srv]==3.12.3
-motor==3.2.0
+motor==2.5.1
 marshmallow
 umongo
 git+https://github.com/Joelkb/cinemagoer
