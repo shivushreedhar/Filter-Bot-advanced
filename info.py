@@ -26,7 +26,7 @@ USERNAME = environ.get('USERNAME', 'https://telegram.me/Shreeshiva323')
 LOG_CHANNEL = int(environ.get('LOG_CHANNEL', '-1002338545238'))
 CHANNELS = [int(ch) if id_pattern.search(ch) else ch for ch in environ.get('CHANNELS', '').split()]
 DATABASE_URI = environ.get('DATABASE_URI', "mongodb+srv://bharathkalladi38:4TDnaR1dZqAEshQq@cluster0.ps5ucul.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
-DATABASE_URI2 = environ.get('DATABASE_URI2', "")
+DATABASE_URI2 = environ.get('DATABASE_URI2', "mongodb+srv://comavam676:9GnjJS1R0SLzH5MU@cluster0.h0ff6ie.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
 DATABASE_NAME = environ.get('DATABASE_NAME', "Cluster4")
 COLLECTION_NAME = environ.get('COLLECTION_NAME', 'Bshegde')
 LOG_API_CHANNEL = int(environ.get('LOG_API_CHANNEL', '-1002338545238'))
