@@ -28,7 +28,7 @@ CHANNELS = [int(ch) if id_pattern.search(ch) else ch for ch in environ.get('CHAN
 DATABASE_URI = environ.get('DATABASE_URI', "mongodb+srv://bharathkalladi38:4TDnaR1dZqAEshQq@cluster0.ps5ucul.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
 DATABASE_URI2 = environ.get('DATABASE_URI2', "")
 DATABASE_NAME = environ.get('DATABASE_NAME', "Cluster4")
-COLLECTION_NAME = environ.get('COLLECTION_NAME', 'Bshegde)
+COLLECTION_NAME = environ.get('COLLECTION_NAME', 'Bshegde')
 LOG_API_CHANNEL = int(environ.get('LOG_API_CHANNEL', '-1002338545238'))
 QR_CODE = environ.get('QR_CODE', 'https://envs.sh/Ctf.jpg')
 
